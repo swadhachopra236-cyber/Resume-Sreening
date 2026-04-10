@@ -66,7 +66,7 @@ def rank_resumes(job_description):
     df_sorted = df.sort_values(by="Similarity (%)", ascending=False)
 
     print("\n" + "=" * 70)
-    print("🏆 AI Resume Ranking Results (Top 5 Candidates)")
+    print("AI Resume Ranking Results (Top 5 Candidates)")
     print("=" * 70)
 
     for rank, (index, row) in enumerate(df_sorted.head(5).iterrows(), start=1):

@@ -3,13 +3,8 @@ import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Load spaCy model (faster version)
+
 nlp = spacy.load("en_core_web_sm", disable=["parser", "ner"])
-
-
-# ---------------------------------------------------
-# Function 1: Preprocess Text
-# ---------------------------------------------------
 def preprocess_text(text):
     doc = nlp(str(text).lower())
     tokens = []
@@ -21,9 +16,7 @@ def preprocess_text(text):
     return " ".join(tokens)
 
 
-# ---------------------------------------------------
-# Function 2: Rank Resumes
-# ---------------------------------------------------
+
 def rank_resumes(job_description):
 
     if job_description.strip() == "":
@@ -31,7 +24,7 @@ def rank_resumes(job_description):
         return
 
     try:
-        # You can change head(300) to full dataset if needed
+        
         df = pd.read_csv(
             "/Users/swadha/Downloads/resume.csv",
             encoding="utf-8"
@@ -50,26 +43,26 @@ def rank_resumes(job_description):
 
     print(f"\n📂 Total Resumes Loaded: {len(df)}")
 
-    # Preprocess resumes
+    
     df["Processed_Resume"] = df[resume_column].apply(preprocess_text)
 
-    # Preprocess job description
+    
     processed_jd = preprocess_text(job_description)
 
-    # TF-IDF with bigrams (better accuracy)
+   
     documents = [processed_jd] + df["Processed_Resume"].tolist()
 
     vectorizer = TfidfVectorizer(ngram_range=(1, 2))
     tfidf_matrix = vectorizer.fit_transform(documents)
 
-    # Cosine Similarity
+    
     similarity_scores = cosine_similarity(
         tfidf_matrix[0:1], tfidf_matrix[1:]
     ).flatten()
 
     df["Similarity (%)"] = similarity_scores * 100
 
-    # Sort by similarity
+   
     df_sorted = df.sort_values(by="Similarity (%)", ascending=False)
 
     print("\n" + "=" * 70)
@@ -87,9 +80,7 @@ def rank_resumes(job_description):
     print("\n✅ Resume Ranking Completed Successfully!")
 
 
-# ---------------------------------------------------
-# Main Execution
-# ---------------------------------------------------
+
 if __name__ == "__main__":
 
     print("\n=================================================")
